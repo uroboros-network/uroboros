@@ -16,7 +16,7 @@ Security comes from time and your own keys. No feature depends on a token price.
 
 | Part | Where | State |
 |---|---|---|
-| Sanctum program (Solana) | `solana/` | Anchor program, live on Solana mainnet. Program id `C4Q1Q28WEDH7MmGANTZutwB6Bwh278UbgBmLkeBxjVpj`. |
+| Sanctum program (Solana) | `solana/` | Anchor program, live on Solana mainnet. Program id `C4Q1Q28WEDH7MmGANTZutwB6Bwh278UbgBmLkeBxjVpj`. Token `7uomqM9JzWQZuRtrbPW2wNQNJCK9QSf39wdpMi7kpump` ($UROBOROS, Pump.fun). |
 | Sanctum contracts (EVM) | `src/` | Code complete and tested; **not deployed**. Targets Base and Ethereum. |
 | Raid the Sanctum (EVM) | `src/BountySanctum.sol`, `src/BountyCold.sol` | Code complete; not deployed. |
 | Weekly challenges (EVM CTF) | `src/challenges/` | Four levels written; not deployed. See `CHALLENGES.md`. |
