@@ -1,0 +1,147 @@
+{
+  "cluster": "custom",
+  "rpc": "http://127.0.0.1:8899",
+  "programId": "C4Q1Q28WEDH7MmGANTZutwB6Bwh278UbgBmLkeBxjVpj",
+  "at": "2026-11-02T11:35:52.847Z",
+  "sanctum": "GutqPBV66ucsvp4uXHS8c1yQGWo5HdWyPgkLBX3pVc9S",
+  "vault": "89kPNRec9Zfr4GfRpdDjbAfLeYpG5Ar8ixNM2BLkX5gf",
+  "keys": {
+    "hot": "47xGMXtgsD1vYr7pCEXyEdpJFeCoq4zAXmVLMBkwDMjG",
+    "cold": "2WwdSfaHz3qT44ikdGE2ry6Z8yf7HYbUZ8EVCR9tEc7w",
+    "guardian": "ABrx2bdSBmnF7Zk4eRW22LCnP2SS4rQYU67fNoERDADA",
+    "rotatedHot": "HzLuJ3WrTpj1qJaxCgwiXwR1pM2Y96XfE7GnvMLrXiJA"
+  },
+  "steps": [
+    {
+      "step": "fund test keys (hot, cold, guardian)",
+      "ok": true,
+      "signature": "tkKzjUKtXwYCFJ3yj28nJhaPmBZVoBWLqG7dng14YcHc6YefhXLm4BqBccy3dR8Nm9NxUjV8pdJuDzXwf6RaneA",
+      "explorer": "https://explorer.solana.com/tx/tkKzjUKtXwYCFJ3yj28nJhaPmBZVoBWLqG7dng14YcHc6YefhXLm4BqBccy3dR8Nm9NxUjV8pdJuDzXwf6RaneA?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    },
+    {
+      "step": "create",
+      "ok": true,
+      "signature": "3tTAp23a4HQqdFyYDvQH9jcUKNJCppk2s9CuSkd8gK9MEcDvPSAPMVmyDSkkAsr5Q9eyev59M7swUK9ba95QbpWW",
+      "explorer": "https://explorer.solana.com/tx/3tTAp23a4HQqdFyYDvQH9jcUKNJCppk2s9CuSkd8gK9MEcDvPSAPMVmyDSkkAsr5Q9eyev59M7swUK9ba95QbpWW?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    },
+    {
+      "step": "deposit 0.1 SOL",
+      "ok": true,
+      "signature": "2RN3ZGq2CFDhS1wYuPYg6fcatcMBMMdHk9KP56JX7FwQuMi2qhPAJpEDeFf6opH9bCoad7EwaRMH6JfWPCmdPkJx",
+      "explorer": "https://explorer.solana.com/tx/2RN3ZGq2CFDhS1wYuPYg6fcatcMBMMdHk9KP56JX7FwQuMi2qhPAJpEDeFf6opH9bCoad7EwaRMH6JfWPCmdPkJx?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    },
+    {
+      "step": "withdraw 4% (paid now)",
+      "ok": true,
+      "signature": "3uTWvfSymAPp8K8hnb4h3FcCQr9bFNM55JabneSWypTEMo2eDGs4UYykXZGA53nNM1vJc4r5PRHYT4YMLFGwNm4W",
+      "explorer": "https://explorer.solana.com/tx/3uTWvfSymAPp8K8hnb4h3FcCQr9bFNM55JabneSWypTEMo2eDGs4UYykXZGA53nNM1vJc4r5PRHYT4YMLFGwNm4W?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    },
+    {
+      "step": "withdraw 20% (queued, 6h)",
+      "ok": true,
+      "signature": "tU3Lxo4jhkaqU37GmzZDx71JRiHsuvS5B2cPANfyCgTPEKGi7jDv7t5TperdiBSCUrUVDsrTTHn11eb2fdCjJke",
+      "explorer": "https://explorer.solana.com/tx/tU3Lxo4jhkaqU37GmzZDx71JRiHsuvS5B2cPANfyCgTPEKGi7jDv7t5TperdiBSCUrUVDsrTTHn11eb2fdCjJke?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899",
+      "queued": {
+        "seq": 0,
+        "amount": "20000000",
+        "readyAt": "2026-11-02T17:35:48.000Z"
+      }
+    },
+    {
+      "step": "guardian panic (24h freeze, voids queue)",
+      "ok": true,
+      "signature": "4Rx5YgCVbXrsfPXqskfuX7C3aHU4MjU5494yR8Bg1sRsfgp6wnwC5SS2yyjGuw7hkCcWT934SxTjQNvwbAK3K7Ha",
+      "explorer": "https://explorer.solana.com/tx/4Rx5YgCVbXrsfPXqskfuX7C3aHU4MjU5494yR8Bg1sRsfgp6wnwC5SS2yyjGuw7hkCcWT934SxTjQNvwbAK3K7Ha?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    },
+    {
+      "step": "withdraw while frozen fails",
+      "ok": true,
+      "expectedError": "Frozen",
+      "simulatedError": "{\"InstructionError\":[1,{\"Custom\":6001}]}",
+      "log": "Program log: AnchorError thrown in programs/sanctum/src/lib.rs:144. Error Code: Frozen. Error Number: 6001. Error Message: sanctum is frozen."
+    },
+    {
+      "step": "guardian cannot stack a second freeze",
+      "ok": true,
+      "expectedError": "FrozenLastHourOnly",
+      "simulatedError": "{\"InstructionError\":[1,{\"Custom\":6010}]}",
+      "log": "Program log: AnchorError thrown in programs/sanctum/src/lib.rs:310. Error Code: FrozenLastHourOnly. Error Number: 6010. Error Message: guardians may only re-panic in the last hour of a freeze."
+    },
+    {
+      "step": "cold unfreeze (guardians + hot muted 24h)",
+      "ok": true,
+      "signature": "2QP8ir8yRKVujgGKgVwvxUN251cVa2LbMaVdicR8v26vT7WXS3AkZYWUh2iPb4MWbtor66ySBRShGKouwbNd4f2d",
+      "explorer": "https://explorer.solana.com/tx/2QP8ir8yRKVujgGKgVwvxUN251cVa2LbMaVdicR8v26vT7WXS3AkZYWUh2iPb4MWbtor66ySBRShGKouwbNd4f2d?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    },
+    {
+      "step": "queued item voided by the panic",
+      "ok": true,
+      "expectedError": "VoidedByPanic",
+      "simulatedError": "{\"InstructionError\":[1,{\"Custom\":6006}]}",
+      "log": "Program log: AnchorError thrown in programs/sanctum/src/lib.rs:800. Error Code: VoidedByPanic. Error Number: 6006. Error Message: queued transfer voided by a panic."
+    },
+    {
+      "step": "cancel voided item (rent back)",
+      "ok": true,
+      "signature": "2kEVG7GXYbDUy6eeXzKcvxGdt4zQJuEBe4WDd4crgHMNiAWKWgEuihefvctVH4SdKRmTNyymPChtTYo15U2jA36v",
+      "explorer": "https://explorer.solana.com/tx/2kEVG7GXYbDUy6eeXzKcvxGdt4zQJuEBe4WDd4crgHMNiAWKWgEuihefvctVH4SdKRmTNyymPChtTYo15U2jA36v?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    },
+    {
+      "step": "re-queue 20%",
+      "ok": true,
+      "signature": "3eYR6rXzxbXR3VLKVmQg2yDuA4eGpqn8PH7MPk8VJWHfJPjsGXGgnNJorxyCSL5ucCUYeiUjtYjnJR24n4KwNUvH",
+      "explorer": "https://explorer.solana.com/tx/3eYR6rXzxbXR3VLKVmQg2yDuA4eGpqn8PH7MPk8VJWHfJPjsGXGgnNJorxyCSL5ucCUYeiUjtYjnJR24n4KwNUvH?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    },
+    {
+      "step": "guardian muted after unfreeze",
+      "ok": true,
+      "expectedError": "GuardianMuted",
+      "simulatedError": "{\"InstructionError\":[1,{\"Custom\":6009}]}",
+      "log": "Program log: AnchorError thrown in programs/sanctum/src/lib.rs:309. Error Code: GuardianMuted. Error Number: 6009. Error Message: guardians are muted after a cold unfreeze."
+    },
+    {
+      "step": "cold panic + unfreeze_and_rotate (new hot key)",
+      "ok": true,
+      "signature": "bBtwmfsjzaTqjCFgdRWq1XnFu77L5478GQTit1xYsNtez19riK52rkf8xfSK4DmETHbRqGZQKqDbxf8sV3ZXD2u",
+      "explorer": "https://explorer.solana.com/tx/bBtwmfsjzaTqjCFgdRWq1XnFu77L5478GQTit1xYsNtez19riK52rkf8xfSK4DmETHbRqGZQKqDbxf8sV3ZXD2u?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    },
+    {
+      "step": "old hot key rejected",
+      "ok": true,
+      "expectedError": "Unauthorized",
+      "simulatedError": "{\"InstructionError\":[1,{\"Custom\":6000}]}",
+      "log": "Program log: AnchorError caused by account: sanctum. Error Code: Unauthorized. Error Number: 6000. Error Message: signer has no standing for this action."
+    },
+    {
+      "step": "create test Token-2022 mint + mint 10M",
+      "ok": true,
+      "signature": "5MKSw7aocKKxTEvRYJvFU8vdNWqZFNofnM7u4muJbHobrJBSGDG9QriqkuCmMNtVUwEMktiVBJfXyhdWDfzT4Egg",
+      "explorer": "https://explorer.solana.com/tx/5MKSw7aocKKxTEvRYJvFU8vdNWqZFNofnM7u4muJbHobrJBSGDG9QriqkuCmMNtVUwEMktiVBJfXyhdWDfzT4Egg?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    },
+    {
+      "step": "init_staking (upgrade authority, min 1M, cooldown 3d)",
+      "ok": true,
+      "signature": "4reyLFB3jNr3BSjHovY2zzFL4uGh3SYoRuPVgDEDHsX4iiTd7yHsATyr6tANtympDzBYe53YVXwGPRkviWwi8bzf",
+      "explorer": "https://explorer.solana.com/tx/4reyLFB3jNr3BSjHovY2zzFL4uGh3SYoRuPVgDEDHsX4iiTd7yHsATyr6tANtympDzBYe53YVXwGPRkviWwi8bzf?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    },
+    {
+      "step": "register node (1M staked)",
+      "ok": true,
+      "signature": "2s3fGvwxyjxQakYtkAFLCsjFvKoQ36T5D4vJzRjnkkyt6pwbr9akLg15mHtifEfHz9jKcXaT4WzyVW5SLhr1PCE1",
+      "explorer": "https://explorer.solana.com/tx/2s3fGvwxyjxQakYtkAFLCsjFvKoQ36T5D4vJzRjnkkyt6pwbr9akLg15mHtifEfHz9jKcXaT4WzyVW5SLhr1PCE1?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    },
+    {
+      "step": "add stake (+0.5M)",
+      "ok": true,
+      "signature": "48AuVxXa7JQfG4rziSizo7C8jdCS6FSLs15W5GJP2dGVKNfpjcRVVek9Qe6MP1muikR16fG4urW4v9cEzmaCETRL",
+      "explorer": "https://explorer.solana.com/tx/48AuVxXa7JQfG4rziSizo7C8jdCS6FSLs15W5GJP2dGVKNfpjcRVVek9Qe6MP1muikR16fG4urW4v9cEzmaCETRL?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899"
+    }
+  ],
+  "staking": {
+    "mint": "AMw3evySf5YiMepsnPk87k9GYkacrNsqUR1nq8hUEfi",
+    "config": "3X3pBSNxP9JCAnCXohzXwZzWWrg4pNLYAVsaYXkAke9w",
+    "node": "GKf94m21GjQNGMb9dSEMABzdNfNvmwuNzFagi1UyureB",
+    "stake": "1500000000000"
+  },
+  "allOk": true
+}

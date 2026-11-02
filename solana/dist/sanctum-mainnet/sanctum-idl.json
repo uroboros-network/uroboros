@@ -1,0 +1,3344 @@
+{
+  "address": "C4Q1Q28WEDH7MmGANTZutwB6Bwh278UbgBmLkeBxjVpj",
+  "metadata": {
+    "name": "sanctum",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Uroboros Sanctum: rate-limited, delayed, freezable vault for one Solana wallet"
+  },
+  "instructions": [
+    {
+      "name": "add_stake",
+      "discriminator": [
+        58,
+        135,
+        189,
+        105,
+        160,
+        120,
+        165,
+        224
+      ],
+      "accounts": [
+        {
+          "name": "operator",
+          "signer": true,
+          "relations": [
+            "node"
+          ]
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "node",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  111,
+                  100,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "operator"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "from",
+          "writable": true
+        },
+        {
+          "name": "stake_vault",
+          "writable": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "token_program",
+          "relations": [
+            "config"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "apply_rules",
+      "discriminator": [
+        57,
+        22,
+        71,
+        185,
+        168,
+        212,
+        204,
+        183
+      ],
+      "accounts": [
+        {
+          "name": "hot",
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "approve_queued",
+      "docs": [
+        "Cold key vouches for an item queued while guardians were muted (after a cold unfreeze). It still waits",
+        "out the delay and is still voided by a later panic."
+      ],
+      "discriminator": [
+        26,
+        242,
+        51,
+        188,
+        161,
+        28,
+        42,
+        244
+      ],
+      "accounts": [
+        {
+          "name": "cold",
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum",
+          "relations": [
+            "queued"
+          ]
+        },
+        {
+          "name": "queued",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_queued",
+      "docs": [
+        "Hot or cold. Closes the queue item (rent back to whoever paid for it). Works on voided items too."
+      ],
+      "discriminator": [
+        160,
+        77,
+        212,
+        172,
+        218,
+        230,
+        205,
+        84
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "signer": true
+        },
+        {
+          "name": "sanctum",
+          "relations": [
+            "queued"
+          ]
+        },
+        {
+          "name": "queued",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "relations": [
+            "queued"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cold_set_rules",
+      "docs": [
+        "Cold key sets any rules, at once. Cancels a pending hot-key proposal."
+      ],
+      "discriminator": [
+        65,
+        122,
+        146,
+        51,
+        245,
+        77,
+        205,
+        4
+      ],
+      "accounts": [
+        {
+          "name": "cold",
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "rules",
+          "type": {
+            "defined": {
+              "name": "Rules"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "cold_withdraw_sol",
+      "docs": [
+        "Cold-key withdrawal: skips the queue, never the hourly/daily caps or a freeze."
+      ],
+      "discriminator": [
+        175,
+        20,
+        3,
+        10,
+        108,
+        68,
+        168,
+        187
+      ],
+      "accounts": [
+        {
+          "name": "cold",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "name": "cap",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "to",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "cold_withdraw_token",
+      "discriminator": [
+        249,
+        121,
+        123,
+        22,
+        217,
+        202,
+        147,
+        158
+      ],
+      "accounts": [
+        {
+          "name": "cold",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum"
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "vault_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "cap",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "to",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "create",
+      "docs": [
+        "The hot key creates a Sanctum (PDA per hot key + nonce) and funds the SOL vault's rent-exempt minimum."
+      ],
+      "discriminator": [
+        24,
+        30,
+        200,
+        40,
+        5,
+        28,
+        7,
+        119
+      ],
+      "accounts": [
+        {
+          "name": "hot",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sanctum",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  97,
+                  110,
+                  99,
+                  116,
+                  117,
+                  109
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "hot"
+              },
+              {
+                "kind": "arg",
+                "path": "nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "nonce",
+          "type": "u64"
+        },
+        {
+          "name": "cold",
+          "type": "pubkey"
+        },
+        {
+          "name": "guardians",
+          "type": {
+            "vec": "pubkey"
+          }
+        },
+        {
+          "name": "rules",
+          "type": {
+            "option": {
+              "defined": {
+                "name": "Rules"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "deposit_sol",
+      "docs": [
+        "Anyone may deposit SOL (a plain transfer to the vault address works too)."
+      ],
+      "discriminator": [
+        108,
+        81,
+        78,
+        117,
+        125,
+        155,
+        56,
+        200
+      ],
+      "accounts": [
+        {
+          "name": "depositor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sanctum"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "deposit_token",
+      "docs": [
+        "Anyone may deposit SPL / Token-2022 tokens; creates the vault's ATA if needed."
+      ],
+      "discriminator": [
+        11,
+        156,
+        96,
+        218,
+        39,
+        163,
+        180,
+        19
+      ],
+      "accounts": [
+        {
+          "name": "depositor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sanctum"
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "from",
+          "writable": true
+        },
+        {
+          "name": "vault_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "execute_queued_sol",
+      "docs": [
+        "Hot or cold, after ready_at, not frozen, not voided by a later panic. Pays in full (the delay replaced the caps)."
+      ],
+      "discriminator": [
+        184,
+        122,
+        1,
+        124,
+        3,
+        167,
+        148,
+        240
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sanctum",
+          "relations": [
+            "queued"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "name": "queued",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "relations": [
+            "queued"
+          ]
+        },
+        {
+          "name": "to",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "execute_queued_token",
+      "discriminator": [
+        163,
+        116,
+        203,
+        43,
+        252,
+        6,
+        199,
+        69
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sanctum",
+          "relations": [
+            "queued"
+          ]
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "name": "queued",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "relations": [
+            "queued"
+          ]
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "vault_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "to",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "init_staking",
+      "docs": [
+        "Once, by the program's upgrade authority, right after the token exists. Stores that key as staking admin."
+      ],
+      "discriminator": [
+        42,
+        18,
+        242,
+        224,
+        66,
+        32,
+        122,
+        8
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "stake_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program_data",
+          "docs": [
+            "Only the program's upgrade authority may initialize (blocks a front-run init with a hostile admin)."
+          ]
+        },
+        {
+          "name": "program",
+          "address": "C4Q1Q28WEDH7MmGANTZutwB6Bwh278UbgBmLkeBxjVpj"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "min_stake",
+          "type": "u64"
+        },
+        {
+          "name": "unstake_cooldown_secs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "panic",
+      "docs": [
+        "Hot, cold or any guardian: freeze all outflows for 24h and void everything queued so far.",
+        "Guardians: muted for 24h after a cold unfreeze; may only re-panic in the last hour of a running freeze."
+      ],
+      "discriminator": [
+        53,
+        209,
+        63,
+        219,
+        113,
+        108,
+        125,
+        195
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "signer": true
+        },
+        {
+          "name": "sanctum",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "propose_rules",
+      "docs": [
+        "Hot key proposes TIGHTER rules; they apply after max(current delay, 3 days)."
+      ],
+      "discriminator": [
+        150,
+        130,
+        56,
+        145,
+        104,
+        78,
+        147,
+        17
+      ],
+      "accounts": [
+        {
+          "name": "hot",
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "rules",
+          "type": {
+            "defined": {
+              "name": "Rules"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "register_node",
+      "discriminator": [
+        102,
+        85,
+        117,
+        114,
+        194,
+        188,
+        211,
+        168
+      ],
+      "accounts": [
+        {
+          "name": "operator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "node",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  111,
+                  100,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "operator"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "from",
+          "writable": true
+        },
+        {
+          "name": "stake_vault",
+          "writable": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "token_program",
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "request_unstake",
+      "docs": [
+        "Starts the cooldown for the whole stake. The node cannot panic from now on; it stays slashable."
+      ],
+      "discriminator": [
+        44,
+        154,
+        110,
+        253,
+        160,
+        202,
+        54,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "operator",
+          "signer": true,
+          "relations": [
+            "node"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "node",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  111,
+                  100,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "operator"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_cold",
+      "discriminator": [
+        184,
+        148,
+        203,
+        134,
+        124,
+        225,
+        4,
+        220
+      ],
+      "accounts": [
+        {
+          "name": "cold",
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_cold",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "set_guardians",
+      "discriminator": [
+        166,
+        69,
+        140,
+        183,
+        157,
+        169,
+        253,
+        40
+      ],
+      "accounts": [
+        {
+          "name": "cold",
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "guardians",
+          "type": {
+            "vec": "pubkey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "set_hot",
+      "discriminator": [
+        22,
+        253,
+        63,
+        166,
+        150,
+        170,
+        43,
+        104
+      ],
+      "accounts": [
+        {
+          "name": "cold",
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_hot",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "set_modes",
+      "docs": [
+        "Cold key: watcher coverage on/off and approval mode. Watchers require approval mode (otherwise every",
+        "legitimate queued transfer would be frozen in its final hour)."
+      ],
+      "discriminator": [
+        102,
+        54,
+        218,
+        62,
+        127,
+        203,
+        246,
+        120
+      ],
+      "accounts": [
+        {
+          "name": "cold",
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "watchers_on",
+          "type": "bool"
+        },
+        {
+          "name": "approval_mode",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "slash",
+      "docs": [
+        "v1: slashing is decided by the team (admin) key. The slashed tokens are burned."
+      ],
+      "discriminator": [
+        204,
+        141,
+        18,
+        161,
+        8,
+        177,
+        92,
+        142
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "node",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  111,
+                  100,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "node.operator",
+                "account": "Node"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "writable": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "stake_vault",
+          "writable": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "token_program",
+          "relations": [
+            "config"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "reason_code",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "unfreeze",
+      "discriminator": [
+        133,
+        160,
+        68,
+        253,
+        80,
+        232,
+        218,
+        247
+      ],
+      "accounts": [
+        {
+          "name": "cold",
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "unfreeze_and_rotate",
+      "docs": [
+        "Cold key: unfreeze and replace the (presumed stolen) hot key in one step, so a thief cannot re-panic."
+      ],
+      "discriminator": [
+        9,
+        76,
+        159,
+        207,
+        18,
+        34,
+        77,
+        25
+      ],
+      "accounts": [
+        {
+          "name": "cold",
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_hot",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "watcher_panic",
+      "docs": [
+        "A staked, active node freezes a Sanctum that opted in, citing a live, unapproved queue item in its final hour.",
+        "Same limits as a guardian: muted 24h after a cold unfreeze, re-panic only in the last hour of a freeze."
+      ],
+      "discriminator": [
+        131,
+        12,
+        205,
+        149,
+        28,
+        18,
+        107,
+        231
+      ],
+      "accounts": [
+        {
+          "name": "operator",
+          "signer": true,
+          "relations": [
+            "node"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "node",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  111,
+                  100,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "operator"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sanctum",
+          "writable": true,
+          "relations": [
+            "queued"
+          ]
+        },
+        {
+          "name": "queued"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw_sol",
+      "docs": [
+        "Hot key. Pays now if inside the hourly + daily room and <= delay_bps of balance; otherwise queues."
+      ],
+      "discriminator": [
+        145,
+        131,
+        74,
+        136,
+        65,
+        137,
+        42,
+        38
+      ],
+      "accounts": [
+        {
+          "name": "hot",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "name": "cap",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "queued",
+          "writable": true
+        },
+        {
+          "name": "to",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_stake",
+      "docs": [
+        "After the cooldown: everything left goes back to the operator and the node account closes."
+      ],
+      "discriminator": [
+        153,
+        8,
+        22,
+        138,
+        105,
+        176,
+        87,
+        66
+      ],
+      "accounts": [
+        {
+          "name": "operator",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "node"
+          ]
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "node",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  111,
+                  100,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "operator"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "operator_ata",
+          "writable": true
+        },
+        {
+          "name": "stake_vault",
+          "writable": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "token_program",
+          "relations": [
+            "config"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw_token",
+      "docs": [
+        "Hot key, tokens. Same rules as `withdraw_sol`; `to` must be a token account of the same mint."
+      ],
+      "discriminator": [
+        136,
+        235,
+        181,
+        5,
+        101,
+        109,
+        57,
+        81
+      ],
+      "accounts": [
+        {
+          "name": "hot",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "sanctum"
+          ]
+        },
+        {
+          "name": "sanctum",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "vault_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "cap",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sanctum"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "queued",
+          "writable": true
+        },
+        {
+          "name": "to",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "CapState",
+      "discriminator": [
+        232,
+        243,
+        86,
+        114,
+        168,
+        251,
+        42,
+        233
+      ]
+    },
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "Node",
+      "discriminator": [
+        208,
+        53,
+        1,
+        3,
+        49,
+        122,
+        180,
+        49
+      ]
+    },
+    {
+      "name": "Queued",
+      "discriminator": [
+        38,
+        212,
+        89,
+        248,
+        54,
+        112,
+        194,
+        83
+      ]
+    },
+    {
+      "name": "Sanctum",
+      "discriminator": [
+        31,
+        19,
+        136,
+        14,
+        30,
+        238,
+        32,
+        13
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "Created",
+      "discriminator": [
+        65,
+        254,
+        68,
+        245,
+        102,
+        148,
+        244,
+        76
+      ]
+    },
+    {
+      "name": "Deposited",
+      "discriminator": [
+        111,
+        141,
+        26,
+        45,
+        161,
+        35,
+        100,
+        57
+      ]
+    },
+    {
+      "name": "KeysChanged",
+      "discriminator": [
+        40,
+        95,
+        58,
+        96,
+        202,
+        111,
+        207,
+        204
+      ]
+    },
+    {
+      "name": "ModesSet",
+      "discriminator": [
+        50,
+        233,
+        191,
+        244,
+        245,
+        167,
+        240,
+        74
+      ]
+    },
+    {
+      "name": "NodeRegistered",
+      "discriminator": [
+        15,
+        57,
+        183,
+        59,
+        93,
+        55,
+        157,
+        195
+      ]
+    },
+    {
+      "name": "Panicked",
+      "discriminator": [
+        207,
+        154,
+        133,
+        145,
+        15,
+        8,
+        46,
+        244
+      ]
+    },
+    {
+      "name": "QueueApproved",
+      "discriminator": [
+        81,
+        138,
+        179,
+        137,
+        254,
+        34,
+        205,
+        24
+      ]
+    },
+    {
+      "name": "QueueCancelled",
+      "discriminator": [
+        201,
+        237,
+        195,
+        174,
+        54,
+        218,
+        223,
+        249
+      ]
+    },
+    {
+      "name": "QueueExecuted",
+      "discriminator": [
+        252,
+        191,
+        28,
+        48,
+        74,
+        50,
+        220,
+        80
+      ]
+    },
+    {
+      "name": "QueuedTransfer",
+      "discriminator": [
+        92,
+        251,
+        42,
+        75,
+        89,
+        230,
+        233,
+        107
+      ]
+    },
+    {
+      "name": "RulesApplied",
+      "discriminator": [
+        225,
+        244,
+        187,
+        218,
+        159,
+        108,
+        203,
+        230
+      ]
+    },
+    {
+      "name": "RulesProposed",
+      "discriminator": [
+        230,
+        247,
+        251,
+        150,
+        215,
+        127,
+        121,
+        42
+      ]
+    },
+    {
+      "name": "Sent",
+      "discriminator": [
+        230,
+        90,
+        111,
+        254,
+        186,
+        174,
+        45,
+        74
+      ]
+    },
+    {
+      "name": "Slashed",
+      "discriminator": [
+        98,
+        59,
+        249,
+        154,
+        233,
+        53,
+        98,
+        194
+      ]
+    },
+    {
+      "name": "StakeWithdrawn",
+      "discriminator": [
+        33,
+        120,
+        159,
+        58,
+        140,
+        255,
+        174,
+        79
+      ]
+    },
+    {
+      "name": "Staked",
+      "discriminator": [
+        11,
+        146,
+        45,
+        205,
+        230,
+        58,
+        213,
+        240
+      ]
+    },
+    {
+      "name": "StakingInitialized",
+      "discriminator": [
+        22,
+        155,
+        230,
+        163,
+        100,
+        9,
+        62,
+        165
+      ]
+    },
+    {
+      "name": "Unfrozen",
+      "discriminator": [
+        222,
+        72,
+        230,
+        135,
+        198,
+        225,
+        71,
+        65
+      ]
+    },
+    {
+      "name": "UnstakeRequested",
+      "discriminator": [
+        21,
+        253,
+        177,
+        85,
+        129,
+        206,
+        42,
+        152
+      ]
+    },
+    {
+      "name": "WatcherPanicked",
+      "discriminator": [
+        171,
+        205,
+        99,
+        182,
+        152,
+        189,
+        210,
+        119
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "signer has no standing for this action"
+    },
+    {
+      "code": 6001,
+      "name": "Frozen",
+      "msg": "sanctum is frozen"
+    },
+    {
+      "code": 6002,
+      "name": "HourlyCap",
+      "msg": "hourly cap"
+    },
+    {
+      "code": 6003,
+      "name": "DailyCap",
+      "msg": "daily cap"
+    },
+    {
+      "code": 6004,
+      "name": "Balance",
+      "msg": "amount exceeds balance"
+    },
+    {
+      "code": 6005,
+      "name": "ZeroAmount",
+      "msg": "amount must be > 0"
+    },
+    {
+      "code": 6006,
+      "name": "VoidedByPanic",
+      "msg": "queued transfer voided by a panic"
+    },
+    {
+      "code": 6007,
+      "name": "NeedsColdApproval",
+      "msg": "queued during guardian mute: needs cold approval"
+    },
+    {
+      "code": 6008,
+      "name": "NotReady",
+      "msg": "not ready yet"
+    },
+    {
+      "code": 6009,
+      "name": "GuardianMuted",
+      "msg": "guardians are muted after a cold unfreeze"
+    },
+    {
+      "code": 6010,
+      "name": "FrozenLastHourOnly",
+      "msg": "guardians may only re-panic in the last hour of a freeze"
+    },
+    {
+      "code": 6011,
+      "name": "TightenOnly",
+      "msg": "hot key may only tighten rules"
+    },
+    {
+      "code": 6012,
+      "name": "BadRules",
+      "msg": "invalid rules"
+    },
+    {
+      "code": 6013,
+      "name": "BadKey",
+      "msg": "invalid key"
+    },
+    {
+      "code": 6014,
+      "name": "TooManyGuardians",
+      "msg": "at most 3 guardians"
+    },
+    {
+      "code": 6015,
+      "name": "DuplicateGuardian",
+      "msg": "duplicate guardian"
+    },
+    {
+      "code": 6016,
+      "name": "BadQueueAccount",
+      "msg": "wrong queue item account"
+    },
+    {
+      "code": 6017,
+      "name": "BadDestination",
+      "msg": "destination does not match"
+    },
+    {
+      "code": 6018,
+      "name": "WrongAsset",
+      "msg": "asset does not match the queue item"
+    },
+    {
+      "code": 6019,
+      "name": "Math",
+      "msg": "math overflow"
+    },
+    {
+      "code": 6020,
+      "name": "WatchersNeedApproval",
+      "msg": "watchers need approval mode"
+    },
+    {
+      "code": 6021,
+      "name": "BadStakeConfig",
+      "msg": "invalid staking config"
+    },
+    {
+      "code": 6022,
+      "name": "BelowMinStake",
+      "msg": "stake below the minimum"
+    },
+    {
+      "code": 6023,
+      "name": "Unstaking",
+      "msg": "node is unstaking"
+    },
+    {
+      "code": 6024,
+      "name": "NodeNotActive",
+      "msg": "node is not active"
+    },
+    {
+      "code": 6025,
+      "name": "WatchersOff",
+      "msg": "sanctum has watchers off"
+    },
+    {
+      "code": 6026,
+      "name": "QueueApproved",
+      "msg": "queue item is approved by the cold key"
+    },
+    {
+      "code": 6027,
+      "name": "NotFinalHour",
+      "msg": "queue item is not in its final hour"
+    }
+  ],
+  "types": [
+    {
+      "name": "CapState",
+      "docs": [
+        "Per (sanctum, mint) outflow accounting. mint = default pubkey for SOL. All sums are u128 (no truncation).",
+        "Daily-cap basis = current balance + capped outflow of the last 24h = (balance 24h ago + deposits since -",
+        "queued/other outflows since). A deposit can only raise the allowance by 10% of itself, and deposited funds",
+        "are locked under the same caps, so inflating the balance never lets more than 10% of (start + deposits) out."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "window_start",
+            "type": "i64"
+          },
+          {
+            "name": "window_balance",
+            "type": "u128"
+          },
+          {
+            "name": "window_spent",
+            "type": "u128"
+          },
+          {
+            "name": "ring",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "HourSlot"
+                  }
+                },
+                25
+              ]
+            }
+          },
+          {
+            "name": "initialized",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_program",
+            "type": "pubkey"
+          },
+          {
+            "name": "stake_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "min_stake",
+            "type": "u64"
+          },
+          {
+            "name": "unstake_cooldown",
+            "type": "i64"
+          },
+          {
+            "name": "total_staked",
+            "type": "u64"
+          },
+          {
+            "name": "node_count",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Created",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "hot",
+            "type": "pubkey"
+          },
+          {
+            "name": "cold",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Deposited",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "HourSlot",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "hour",
+            "type": "i64"
+          },
+          {
+            "name": "spent",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "KeysChanged",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "hot",
+            "type": "pubkey"
+          },
+          {
+            "name": "cold",
+            "type": "pubkey"
+          },
+          {
+            "name": "guardian_count",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ModesSet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "watchers_on",
+            "type": "bool"
+          },
+          {
+            "name": "approval_mode",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Node",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "stake",
+            "type": "u64"
+          },
+          {
+            "name": "unstake_at",
+            "docs": [
+              "0 = active; otherwise the time the cooldown ends (node can no longer panic)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "registered_at",
+            "type": "i64"
+          },
+          {
+            "name": "slashed_total",
+            "type": "u64"
+          },
+          {
+            "name": "panics",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NodeRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "node",
+            "type": "pubkey"
+          },
+          {
+            "name": "operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "stake",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Panicked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "by",
+            "type": "pubkey"
+          },
+          {
+            "name": "guardian",
+            "type": "bool"
+          },
+          {
+            "name": "until",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "QueueApproved",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "seq",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "QueueCancelled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "seq",
+            "type": "u64"
+          },
+          {
+            "name": "by",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "QueueExecuted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "seq",
+            "type": "u64"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "to",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Queued",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "seq",
+            "type": "u64"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "to",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "queued_at",
+            "type": "i64"
+          },
+          {
+            "name": "ready_at",
+            "type": "i64"
+          },
+          {
+            "name": "panic_epoch",
+            "type": "u64"
+          },
+          {
+            "name": "approved",
+            "type": "bool"
+          },
+          {
+            "name": "payer",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "QueuedTransfer",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "seq",
+            "type": "u64"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "to",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "ready_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Rules",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "cap_bps",
+            "docs": [
+              "max outflow per asset per fixed hour, bps of the balance at the hour window's start"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "day_cap_bps",
+            "docs": [
+              "max outflow per asset per rolling 24h, bps of (balance + what left in the last 24h)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "delay_bps",
+            "docs": [
+              "transfers above this share of the balance are queued"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "delay_secs",
+            "docs": [
+              "seconds a queued transfer waits"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RulesApplied",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "rules",
+            "type": {
+              "defined": {
+                "name": "Rules"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RulesProposed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "rules",
+            "type": {
+              "defined": {
+                "name": "Rules"
+              }
+            }
+          },
+          {
+            "name": "ready_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Sanctum",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "hot",
+            "type": "pubkey"
+          },
+          {
+            "name": "cold",
+            "type": "pubkey"
+          },
+          {
+            "name": "guardians",
+            "type": {
+              "array": [
+                "pubkey",
+                3
+              ]
+            }
+          },
+          {
+            "name": "guardian_count",
+            "type": "u8"
+          },
+          {
+            "name": "rules",
+            "type": {
+              "defined": {
+                "name": "Rules"
+              }
+            }
+          },
+          {
+            "name": "pending_rules",
+            "type": {
+              "defined": {
+                "name": "Rules"
+              }
+            }
+          },
+          {
+            "name": "rules_ready_at",
+            "type": "i64"
+          },
+          {
+            "name": "frozen_until",
+            "type": "i64"
+          },
+          {
+            "name": "last_panic_at",
+            "type": "i64"
+          },
+          {
+            "name": "guardian_muted_until",
+            "type": "i64"
+          },
+          {
+            "name": "panic_epoch",
+            "docs": [
+              "bumped by every panic; a queue item is valid only while its epoch equals this"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "queue_seq",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "type": "u8"
+          },
+          {
+            "name": "watchers_on",
+            "docs": [
+              "cold opt-in: staked watcher nodes may panic on unapproved queue items in their final hour"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "approval_mode",
+            "docs": [
+              "every queued transfer needs cold approval before it can execute (forced on while watchers_on)"
+            ],
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Sent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "to",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Slashed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "node",
+            "type": "pubkey"
+          },
+          {
+            "name": "operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "reason_code",
+            "type": "u16"
+          },
+          {
+            "name": "stake_left",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakeWithdrawn",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "node",
+            "type": "pubkey"
+          },
+          {
+            "name": "operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Staked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "node",
+            "type": "pubkey"
+          },
+          {
+            "name": "operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "stake",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakingInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "min_stake",
+            "type": "u64"
+          },
+          {
+            "name": "unstake_cooldown",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Unfrozen",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "muted_until",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnstakeRequested",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "node",
+            "type": "pubkey"
+          },
+          {
+            "name": "operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "stake",
+            "type": "u64"
+          },
+          {
+            "name": "ready_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WatcherPanicked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sanctum",
+            "type": "pubkey"
+          },
+          {
+            "name": "node",
+            "type": "pubkey"
+          },
+          {
+            "name": "operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "seq",
+            "type": "u64"
+          },
+          {
+            "name": "until",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}

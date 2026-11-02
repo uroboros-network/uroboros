@@ -1,0 +1,15 @@
+node_modules/
+out/
+cache/
+broadcast/
+.env
+*.env
+deployments/*.json
+target/
+.anchor/
+test-ledger/
+*-keypair.json
+keys/
+**/keys/
+*.key
+*.pem

@@ -1,0 +1,16 @@
+{
+  "name": "uroboros",
+  "private": true,
+  "version": "0.3.0",
+  "description": "Uroboros Sanctum — off-chain scripts: proof writer, raid indexer, challenge indexer",
+  "type": "module",
+  "scripts": {
+    "prove": "node scripts/prove-sanctum.mjs",
+    "raid": "node scripts/raid-indexer.mjs",
+    "challenges": "node scripts/challenge-indexer.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "viem": "^2.57.14"
+  }
+}
