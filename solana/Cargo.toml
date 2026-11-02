@@ -8,3 +8,8 @@ overflow-checks = true
 lto = "fat"
 codegen-units = 1
 strip = true
+
+# Pins the solana-verify (OtterSec verified build) Docker image: solanafoundation/solana-verifiable-build 4.3.0
+# (cargo-build-sbf 4.3.0, platform-tools v1.57). Build: solana-verify build --library-name sanctum
+[workspace.metadata.cli]
+solana = "4.3.0"
